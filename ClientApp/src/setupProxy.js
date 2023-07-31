@@ -11,6 +11,10 @@ const context = [
   "/api/cadetecliente",
   "/api/cliente",
   "/api/pedido",
+  "/weatherforecast",
+  "/user",
+  "/user/register",
+  "/user/authenticate",
 ];
 
 module.exports = function (app) {

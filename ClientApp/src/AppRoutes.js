@@ -9,22 +9,26 @@ import Usuarios from "./components/User";
 import TomarPedido from "./components/TomarPedido";
 import ActionPedido from "./components/ActionPedido";
 import FormPedido from "./components/FormPedido";
+import UpdateUser from "./components/UpdateUser";
 
 const AppRoutes = [
   {
     index: true,
     name: "Home",
     path: '/',
+    private: false,
     element: <Home />
   },
   {
     name: "Cadete",
     path: '/cadete',
+    private: true,
     element: <Cadete />
   },
   {
     name: "Cliente",
     path: '/cliente',
+    private: true,
     element: <Cliente />
   },
   {
@@ -33,18 +37,15 @@ const AppRoutes = [
     element: <Pedido />
   },
   {
-    name: "Usuarios",
-    path: '/usuarios',
-    element: <Usuarios />
-  },
-  {
     name: "Login",
     path: '/login',
+    private: false,
     element: <Login />
   },
   {
     name: "Register",
     path: '/register',
+    publicOnly: true,
     element: <Register />
   },
   {
@@ -61,6 +62,20 @@ const AppRoutes = [
     invisible: true,
     path: '/actionPedido',
     element: <ActionPedido />
+  },
+  {
+    name: "Usuarios",
+    path: '/Usuarios',
+    private: true,
+    exclusive: true,
+    element: <Usuarios />
+  },
+  {
+    path: '/UpdateUser',
+    private: true,
+    exclusive: true,
+    invisible: true,
+    element: <UpdateUser />
   },
   {
     path: '*',

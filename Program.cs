@@ -1,4 +1,7 @@
 using Cadeteria;
+using Cadeteria.Authorization;
+using Cadeteria.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +11,19 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddSqlServer<DataContext>(builder.Configuration.GetConnectionString("SQLServer"));
 
+builder.Services.AddCors();
+builder.Services.AddControllers();
+
+// configure automapper with all automapper profiles from this assembly
+builder.Services.AddAutoMapper(typeof(Program));
+
+// configure strongly typed settings object
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+
+
+builder.Services.AddScoped<IJwtUtils, JwtUtils>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRolRepository, RolRepository>();
 builder.Services.AddScoped<ICadeteRepository, CadeteRepository>();
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
@@ -17,6 +33,9 @@ builder.Services.AddScoped<ICadeteClienteRepository, CadeteClienteRepository>();
 var app = builder.Build();
 
 
+
+
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -24,10 +43,31 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+    dataContext.Database.Migrate();
+}
+
+{
+    // global cors policy
+    app.UseCors(x => x
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+
+    // global error handler
+    app.UseMiddleware<ErrorHandlerMiddleware>();
+
+    // custom jwt auth middleware
+    app.UseMiddleware<JwtMiddleware>();
+
+    app.MapControllers();
+}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
 
 app.MapControllerRoute(
     name: "default",
