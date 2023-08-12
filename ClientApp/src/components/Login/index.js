@@ -6,9 +6,8 @@ import "./login.css";
 import { helpHttp } from "../../Helper";
 import { useAuth } from "../Auth";
 
-
 const InitialForm = {
-    name: "",
+    userName: "",
     password: "",
 }
 
@@ -19,7 +18,6 @@ const Login = () => {
         setUrl,
         url,
     } = React.useContext(GlobalContext)
-
 
     const auth = useAuth();
 
@@ -47,6 +45,7 @@ const Login = () => {
                 navigate("/")
             } else {
                 //navigate("/error")
+                console.log(res)
                 alert("Error intente nuevamente")
             }
         })
@@ -59,7 +58,7 @@ const Login = () => {
                 <div className="illustration">
                     <i className="icon ion-ios-locked-outline"></i></div>
                 <div className="form-group">
-                    <input className="form-control" type="text" name="name" placeholder="UserName" value={form.name} onChange={handleChange} />
+                    <input className="form-control" type="text" name="userName" placeholder="UserName" value={form.userName} onChange={handleChange} />
                 </div>
                 <div className="form-group">
                     <input className="form-control" type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} />

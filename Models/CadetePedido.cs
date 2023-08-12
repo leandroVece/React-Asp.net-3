@@ -6,13 +6,13 @@ namespace Cadeteria.Models;
 public class CadetesPedido
 {
 
-    public Guid Id_cadPed { get; set; }
-    public virtual Guid CadeteForeingKey { get; set; }
-    public virtual Guid PedidoForeingKey { get; set; }
+    public Guid id { get; set; }
+    public virtual Guid userForeingKey { get; set; }
+    public virtual Guid pedidoForeingKey { get; set; }
 
     [NotMapped]
     [JsonIgnore]
-    public virtual Cadetes? Cadete { get; set; }
+    public virtual User? Cadete { get; set; }
 
     [NotMapped]
     [JsonIgnore]

@@ -6,20 +6,20 @@ import { Navigate } from "react-router-dom";
 const authContext = React.createContext();
 
 function AuthProvider({ children }) {
-
     const cookies = new Cookies();
     const [url, setUrl] = useState("")
     const api = helpHttp();
     const [loginTouch, setLoginTouch] = useState(false);
     const [dbUser, setDbUser] = useState([]);
+    const [totalPages, setTotalPage] = useState()
+    const [loading, setLoading] = useState(false);
+
 
     useEffect(() => {
-        console.log("hecho")
     }, [loginTouch])
 
-
     useEffect(() => {
-        //console.log(cookies)
+        setLoading(true);
         let options = {
             headers: {
                 "Authorization": "Bearer " + cookies.get("Token")
@@ -28,18 +28,42 @@ function AuthProvider({ children }) {
         helpHttp().get(url, options).then((res) => {
             if (!res.err) {
                 setDbUser(res)
+                setTotalPage(res.totalPages)
+                setLoading(false);
+
             } else {
                 console.log(res)
-                //alert("error")
             }
         });
     }, [url]);
+
+    const createWithToken = (data) => {
+        delete data.id
+        let options = {
+            body: data,
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer " + cookies.get("Token")
+            },
+        };
+        helpHttp().post(url, options).then((res) => {
+            if (res.err) {
+                //setError(res);
+            } else {
+                console.log(res);
+                setDbUser([...dbUser, res]);
+            }
+        })
+    }
 
     const UpdateWithToken = (data) => {
         let endpoint = `${url}/${data.id}`;
         let options = {
             body: data,
-            headers: { "Authorization": "Bearer " + cookies.get("Token") },
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer " + cookies.get("Token")
+            },
         };
         api.put(endpoint, options).then((res) => {
             if (!res.err) {
@@ -55,9 +79,12 @@ function AuthProvider({ children }) {
             `¿Estás seguro de eliminar el registro con el id '${id}'?`
         );
         if (isDelete) {
-            let endpoint = `${url}/${id}`;
+            let endpoint = `/user/${id}`;
             let options = {
-                headers: { "Authorization": "Bearer " + cookies.get("Token") },
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": "Bearer " + cookies.get("Token")
+                },
             };
             api.del(endpoint, options).then((res) => {
                 if (!res.err) {
@@ -68,27 +95,44 @@ function AuthProvider({ children }) {
         } else {
             return;
         }
-
+    }
+    const deleteWithTokenAndUrl = (id, url) => {
+        let endpoint = `/${url}/${id}`;
+        console.log(endpoint)
+        let options = {
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer " + cookies.get("Token")
+            },
+        };
+        api.del(endpoint, options).then((res) => {
+            if (!res.err) {
+            } else {
+                //setError(res);
+            }
+        });
     }
 
     const login = (data) => {
-        cookies.set('id', data.id_user, { path: '/' })
-        cookies.set('name', data.name, { path: '/' })
-        cookies.set('rol', data.rol, { path: '/' })
-        cookies.set('Token', data.token, { path: '/' })
-        cookies.set('permisos',)
+        cookies.set('id', data.id, { path: '/', maxAge: 60 * 60 * 24 })
+        cookies.set('name', data.userName, { path: '/', maxAge: 30 * 60 * 24 })
+        cookies.set('rol', data.rol, { path: '/', maxAge: 60 * 60 * 24 })
+        cookies.set('id_profile', data.id_profile, { path: '/', maxAge: 60 * 60 * 24 })
+        cookies.set('Token', data.token, { path: '/', maxAge: 60 * 60 * 24 })
     }
 
     const logout = () => {
         cookies.remove('id', { path: '/' })
         cookies.remove('name', { path: '/' })
         cookies.remove('rol', { path: '/' })
+        cookies.remove('id_profile', { path: '/' })
         cookies.remove('Token', { path: '/' })
+        return <Navigate to='/' />
     }
 
     const auth = {
         cookies, login, logout, UpdateWithToken, deleteWithToken, loginTouch, setLoginTouch,
-        setDbUser, dbUser, setUrl
+        setDbUser, dbUser, setUrl, url, createWithToken, totalPages, loading, deleteWithTokenAndUrl
     }
 
     return (

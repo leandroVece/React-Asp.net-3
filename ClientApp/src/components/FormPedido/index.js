@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { GlobalContext } from "../../ApiContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import { AuthRouter } from "../Auth";
 
 const InitialForm = {
     id: null,
@@ -14,8 +15,6 @@ const FormPedido = () => {
     let navigate = useNavigate();
     const {
         setUrl,
-        dataToEdit,
-        setDataToEdit,
         createData,
         updateData,
     } = React.useContext(GlobalContext)
@@ -26,24 +25,25 @@ const FormPedido = () => {
     const [form, setForm] = useState(InitialForm);
 
     useEffect(() => {
-        if (state.data.id_pedido) {
+        if (state.data) {
             setForm(state.data);
         } else {
             setForm(InitialForm);
         }
-    }, [dataToEdit]);
+    }, [state]);
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (form.id_pedido) {
+        if (form.id) {
             updateData(form);
         } else {
-            form.ClienteForeingKey = state.data.id_cliente;
+            form.ClienteForeingKey = state.idresul;
             createData(form)
         }
 
         handleReset();
-        navigate('/pedido', { replace: true })
+        //navigate('/pedido', { replace: true })
     };
 
     const handleChange = (e) => {
@@ -55,30 +55,31 @@ const FormPedido = () => {
 
     const handleReset = () => {
         setForm(InitialForm);
-        setDataToEdit(null);
     };
 
     return (
         <>
-            <div className="col-sm-12 d-flex justify-content-center bg-dark">
-                <h1 className="text-center text-white">Formulario pedidos nuevos </h1>
-            </div>
-            <div className="row container justify-content-center align-items-center">
-                <div className="col-auto w-75  mt-2">
-                    <form className="border p-3 form" onSubmit={handleSubmit}>
-                        <div className="row g-4 form-group">
-                            <div className="col-auto d-block ">
-                                <label htmlFor="obs" className="me-2"> Obs</label>
-                                <input value={form.obs} onChange={handleChange} name="obs" id="obs" />
-                            </div>
-                            <div className="col-auto ">
-                                <input className="btn btn-outline-primary" type="submit" value="Enviar" />
-                                <input className="btn btn-outline-primary" type="reset" value="Limpiar" onClick={handleReset} />
-                            </div>
-                        </div>
-                    </form>
+            <AuthRouter>
+                <div className="col-sm-12 d-flex justify-content-center bg-dark">
+                    <h1 className="text-center text-white">Formulario pedidos nuevos </h1>
                 </div>
-            </div>
+                <div className="row container justify-content-center align-items-center">
+                    <div className="col-auto w-75  mt-2">
+                        <form className="border p-3 form" onSubmit={handleSubmit}>
+                            <div className="row g-4 form-group">
+                                <div className="col-auto d-block ">
+                                    <label htmlFor="obs" className="me-2"> Obs</label>
+                                    <input value={form.obs} onChange={handleChange} name="obs" id="obs" />
+                                </div>
+                                <div className="col-auto ">
+                                    <input className="btn btn-outline-primary" type="submit" value="Enviar" />
+                                    <input className="btn btn-outline-primary" type="reset" value="Limpiar" onClick={handleReset} />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </AuthRouter>
         </>
     )
 }

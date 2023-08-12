@@ -32,9 +32,11 @@ public class PedidoRepository : IPedidoRepository
         Console.WriteLine(id);
 
         if (pedidoAux != null)
-
+        {
             pedidoAux.Estado = pedido.Estado;
-        pedidoAux.Obs = pedido.Obs;
+            pedidoAux.Obs = pedido.Obs;
+        }
+
 
         await context.SaveChangesAsync();
     }

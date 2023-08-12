@@ -31,6 +31,7 @@ const ContextProvider = (props) => {
 
     const createData = (data) => {
         delete data.id
+        console.log(data)
         let options = {
             body: data,
             headers: { "content-type": "application/json" },
@@ -38,15 +39,16 @@ const ContextProvider = (props) => {
         helpHttp().post(url, options).then((res) => {
             if (res.err) {
                 setError(res);
+                console.log(res)
             } else {
-                console.log(res);
-                setDb([...db, res]);
+                //setDb([...db, res]);
+                console.log("hecho")
             }
         })
     }
 
     const updateData = (data) => {
-        let id = data.id_cadete || data.id_cliente || data.id_pedido;
+        let id = data.id;
         var newData;
         let endpoint = `${url}/${id}`;
         let options = {
@@ -92,8 +94,7 @@ const ContextProvider = (props) => {
     }
 
     const updateWihtUrl = (data, url) => {
-        let id = data.id_cadete || data.id_cliente || data.id_pedido;
-        let endpoint = `${url}/${id}`;
+        let endpoint = `${url}/${data.id}`;
         let options = {
             body: data,
             headers: { "content-type": "application/json" },

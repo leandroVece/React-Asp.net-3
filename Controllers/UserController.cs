@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Cadeteria.Authorization;
 using Cadeteria.Models;
 using Cadeteria.Services;
+using System.Collections;
 
 [Authorize]
 [ApiController]
@@ -42,7 +43,6 @@ public class UserController : ControllerBase
     [HttpPost("register")]
     public IActionResult Register(RegisterRequest model)
     {
-        model.rolForeikey = Guid.Parse("f0601b48-a878-4fb5-a767-3f1340b8c0d8");
         _userRepository.Register(model);
         return Ok(new { message = "Registration successful" });
     }
@@ -50,10 +50,74 @@ public class UserController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
-        var users = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id_rol,
-        (us, r) => new { us.Id_user, us.Name, r.Id_rol, r.RolName }).ToList();
-        // var users = _userRepository.GetAll();
-        return Ok(users);
+        int page = 1;
+        var pagedData = _userRepository.GetUserJoin(page);
+
+        var totalRecords = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id,
+        (us, r) => new { us.Id, r.rolName }).Count();
+        return Ok(new PagedResponse<IEnumerable<JoinResponse>>(
+            pagedData, totalRecords / 1, page));
+    }
+
+    [HttpGet]
+    [Route("page/{page}")]
+    public IActionResult GetPage(int page = 1)
+    {
+        List<JoinResponse> pagedData = _userRepository.GetUserJoin(page);
+
+        var totalRecords = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id,
+        (us, r) => new { us.Id, r.rolName }).Count();
+        return Ok(new PagedResponse<IEnumerable<JoinResponse>>(
+            pagedData, totalRecords / 1, page));
+    }
+
+    [HttpGet]
+    [Route("cadete")]
+    public IActionResult GetCadete()
+    {
+        int page = 1;
+        var pagedData = _userRepository.GetUserJoinAndWhere(page, "cadete");
+
+        var totalRecords = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id,
+        (us, r) => new { us.Id, r.rolName }).Where(x => x.rolName == "cadete").Count();
+        return Ok(new PagedResponse<IEnumerable<JoinResponse>>(
+            pagedData, totalRecords / 1, page));
+    }
+
+    [HttpGet]
+    [Route("cadete/page/{int}")]
+    public IActionResult GetCadetepage(int page = 1)
+    {
+        var pagedData = _userRepository.GetUserJoinAndWhere(page, "cadete");
+
+        var totalRecords = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id,
+        (us, r) => new { us.Id, r.rolName }).Where(x => x.rolName == "cadete").Count();
+        return Ok(new PagedResponse<IEnumerable<JoinResponse>>(
+            pagedData, totalRecords / 1, page));
+    }
+
+    [HttpGet]
+    [Route("cliente")]
+    public IActionResult GetCliente()
+    {
+        int page = 1;
+        var pagedData = _userRepository.GetUserJoinAndWhere(page, "cliente");
+
+        var totalRecords = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id,
+        (us, r) => new { us.Id, r.rolName }).Where(x => x.rolName == "cliente").Count();
+        return Ok(new PagedResponse<IEnumerable<JoinResponse>>(
+            pagedData, totalRecords / 1, page));
+    }
+    [HttpGet]
+    [Route("cliente/page/{page}")]
+    public IActionResult GetClientePage(int page = 1)
+    {
+        var pagedData = _userRepository.GetUserJoinAndWhere(page, "cliente");
+
+        var totalRecords = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id,
+        (us, r) => new { us.Id, r.rolName }).Where(x => x.rolName == "cliente").Count();
+        return Ok(new PagedResponse<IEnumerable<JoinResponse>>(
+            pagedData, totalRecords / 1, page));
     }
 
     [HttpGet("rol")]
@@ -61,14 +125,6 @@ public class UserController : ControllerBase
     {
         var rol = _userRepository.GetAllRol();
         return Ok(rol);
-    }
-
-    [HttpGet("{id}")]
-    public IActionResult GetById(Guid id)
-    {
-        var user = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id_rol,
-        (us, r) => new { us.Id_user, us.Name, us.Password, r.Id_rol, r.RolName }).Where(x => x.Id_user == id);
-        return Ok(user);
     }
 
     [HttpPut("{id}")]

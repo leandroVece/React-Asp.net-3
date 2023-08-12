@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import roles from "../../Rol";
 import { useAuth } from "../Auth";
 
@@ -15,7 +15,7 @@ const InitialFrom = {
 const TableRow = ({ user, deleteWithToken }) => {
 
     const navigate = useNavigate();
-    const { name, rolName, id_user, id_rol } = user
+    const { id, nombre, rolName, ...res } = user
     const auth = useAuth();
 
     const Updatadata = (id_user) => {
@@ -29,19 +29,19 @@ const TableRow = ({ user, deleteWithToken }) => {
 
     return (
         <tr>
-            <td>{name}</td>
+            <td>{nombre}</td>
             <td>{rolName}</td>
             <td>
                 <div className="col-auto mb-2">
                     {permisos.write &&
-                        <button className="btn btn-primary" onClick={() => Updatadata(id_user)}>Actualizar</button>
+                        <button className="btn btn-primary" onClick={() => Updatadata(id)}>Actualizar</button>
                     }
                 </div>
             </td>
             <td>
                 <div className="col-auto mb-2">
-                    {permisos.write &&
-                        <button className="btn btn-primary m-0" onClick={() => deletedata(id_user)}>Eliminar</button>
+                    {permisos.delete &&
+                        <button className="btn btn-primary m-0" onClick={() => deletedata(id)}>Eliminar</button>
                     }
                 </div>
             </td>

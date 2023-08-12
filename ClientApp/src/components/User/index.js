@@ -1,23 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AuthRouter, useAuth } from "../Auth";
 import TableRow from "../TableRow";
 import { GlobalContext } from "../../ApiContext"
 import Loader from "../Loader"
+import Paginacion from "../Paginacion";
+import { useParams } from "react-router-dom";
 
-const InitialForm = {
-    id: null,
-    nombre: "",
-    direccion: "",
-    telefono: "",
-}
+
 const Usuarios = () => {
     const auth = useAuth();
+    const param = useParams()
+
+    if (param?.usuarioPage) {
+        auth.setUrl(`user/page/${param?.usuarioPage}`)
+    }
+    else
+        auth.setUrl('/user')
 
     const {
         loading,
     } = React.useContext(GlobalContext)
-
-    auth.setUrl('/user')
 
     return (
         <>
@@ -27,33 +29,44 @@ const Usuarios = () => {
                 </div>
                 <h2>Esta solo se vera para cadetes o administradores</h2>
 
-                {loading && <Loader />}
-                <div>
-                    <table className="table w-75 mx-auto">
-                        <thead>
-                            <tr>
-                                <th className="w-25">Nombre</th>
-                                <th className="w-25">Rol</th>
-                                <th className="w-25">Editar</th>
-                                <th className="w-25">Eliminar</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {auth.dbUser.length > 0 ? (
-                                auth.dbUser.map((user, index) =>
-                                    < TableRow
-                                        key={index}
-                                        user={user}
-                                        deleteWithToken={auth.deleteWithToken}
-                                    />
-                                )) : (
-                                <tr>
-                                    <td colSpan="2">Sin datos</td>
-                                </tr>)}
-                        </tbody>
-                    </table>
+                {auth.loading && <Loader />}
 
-                </div>
+                {!auth.loading && auth.dbUser.data && (
+                    <div>
+                        <div>
+                            <table className="table w-75 mx-auto">
+                                <thead>
+                                    <tr>
+                                        <th className="w-25">Nombre</th>
+                                        <th className="w-25">Rol</th>
+                                        <th className="w-25">Editar</th>
+                                        <th className="w-25">Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {auth.dbUser.data.length > 0 ? (
+                                        auth.dbUser.data.map((user, index) =>
+                                            < TableRow
+                                                key={index}
+                                                user={user}
+                                                deleteWithToken={auth.deleteWithToken}
+                                            />
+                                        )) : (
+                                        <tr>
+                                            <td colSpan="2">Sin datos</td>
+                                        </tr>)}
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        < Paginacion
+                            totalPages={auth.dbUser.totalPages}
+                            param={auth.dbUser.pageNumber}
+                            url={"usuarios"}
+                        />
+                    </div>)
+                }
             </AuthRouter>
         </>
     );

@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import { AuthRouter, useAuth } from "../Auth";
 import { useLocation } from "react-router-dom";
 import { helpHttp } from "../../Helper";
-import { GlobalContext } from "../../ApiContext";
 
 const InitialForm = {
     name: "",
     rolName: "",
     password: "",
-    id_user: null,
-    id_rol: null
+    id: null,
+    rolForeiKey: null
 }
 
 const UpdateUser = () => {
@@ -92,7 +91,6 @@ const UpdateUser = () => {
 
                     </form>
                 </div >
-
             </AuthRouter>
         </>
     );

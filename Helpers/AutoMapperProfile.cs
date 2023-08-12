@@ -3,15 +3,18 @@ namespace Cadeteria;
 using AutoMapper;
 using Cadeteria.Models;
 
-public class AutoMapperProfile : Profile
+public class AutoMapperProfile : AutoMapper.Profile
 {
     public AutoMapperProfile()
     {
+
         // User -> AuthenticateResponse
         CreateMap<User, AuthenticateResponse>();
 
+
         // RegisterRequest -> User
         CreateMap<RegisterRequest, User>();
+
 
         // UpdateRequest -> User
         CreateMap<UpdateRequest, User>()
@@ -25,5 +28,15 @@ public class AutoMapperProfile : Profile
                     return true;
                 }
             ));
+
+        CreateMap<Pedido, PedidoResponce>();
+        CreateMap<PedidoResponce, Models.Profile>()
+            .ForMember(
+                des => des.Nombre,
+                opt => opt.MapFrom(src => src.Nombre)
+            );
+
+
+
     }
 }

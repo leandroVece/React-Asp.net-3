@@ -5,94 +5,97 @@ namespace Cadeteria;
 
 public class DataContext : DbContext
 {
-    public DbSet<Cadetes> Cadetes { get; set; }
-    public DbSet<Clientes> Clientes { get; set; }
+    public DbSet<Profile> Profile { get; set; }
     public DbSet<Pedido> Pedido { get; set; }
-    public DbSet<CadeteCliente> CadCliente { get; set; }
+    public DbSet<Historial> CadCliente { get; set; }
     public DbSet<CadetesPedido> CadPed { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Rol> rols { get; set; }
     public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        List<Cadetes> listCadete = new List<Cadetes>();
-        listCadete.Add(new Cadetes() { Id_cadete = Guid.Parse("7b5e9399-8e95-4ae8-8745-9542a01e2cc0"), NombreCad = "Jaun Castellanos", Direccion = "Entre rios", Telefono = "231321231" });
-        listCadete.Add(new Cadetes() { Id_cadete = Guid.Parse("0a9fa564-0604-4dfa-88df-3636fe395651"), NombreCad = "Ana Hume", Direccion = "independencia", Telefono = "231321231" });
-        listCadete.Add(new Cadetes() { Id_cadete = Guid.Parse("0a9fa564-0604-4dfa-88df-3636fe395678"), NombreCad = "Fer Hume", Direccion = "independencia", Telefono = "654321" });
 
-        modelBuilder.Entity<Cadetes>(Cadete =>
+        modelBuilder.Entity<User>(User =>
         {
-            Cadete.ToTable("cadete");
-            Cadete.HasKey(c => c.Id_cadete);
-            Cadete.Property(c => c.Id_cadete).IsRequired().ValueGeneratedOnAdd();
 
-            Cadete.Property(c => c.NombreCad).IsRequired().HasMaxLength(20);
-            Cadete.Property(c => c.Direccion).IsRequired();
-            Cadete.Property(c => c.Telefono).IsRequired();
+            User.ToTable("usuario");
+            User.HasKey(User => User.Id);
+            User.Property(User => User.userName).IsRequired().HasMaxLength(15).IsUnicode();
+            User.Property(User => User.password).IsRequired().HasMaxLength(80);
 
-            Cadete.Ignore(x => x.listaPedido);
-            Cadete.Ignore(x => x.Cadp);
-            Cadete.HasData(listCadete);
+            User.HasOne(r => r.Rol).WithMany(us => us.User).HasForeignKey(r => r.rolForeikey);
+
+            User.HasData(listaDb.ListUser());
         });
 
-        List<Clientes> listaCliente = new List<Clientes>();
-        listaCliente.Add(new Clientes() { Id_cliente = Guid.Parse("7b5e9399-8e95-4ae8-8745-9542a01e2cc3"), Nombre = "Pancho Castellanos", Direccion = "Entre rios", Telefono = "5231234" });
-        listaCliente.Add(new Clientes() { Id_cliente = Guid.Parse("7b5e9399-8e95-4ae8-8745-9542a01e2cc1"), Nombre = "Lucio Hume", Direccion = "independencia", Telefono = "8321156" });
-        listaCliente.Add(new Clientes() { Id_cliente = Guid.Parse("7b5e9399-8e95-4ae8-8745-9542a01e2cc5"), Nombre = "Val Hume", Direccion = "independencia", Telefono = "975313" });
+        modelBuilder.Entity<Profile>(profile =>
+       {
+           profile.ToTable("perfil");
+           profile.HasKey(p => p.id);
+           profile.Property(p => p.id).IsRequired().ValueGeneratedOnAdd();
 
-        modelBuilder.Entity<Clientes>(Clientes =>
-        {
-            Clientes.ToTable("cliente");
-            Clientes.HasKey(p => p.Id_cliente);
-            Clientes.Property(p => p.Id_cliente).IsRequired().ValueGeneratedOnAdd();
+           profile.Property(p => p.Nombre).IsRequired().HasMaxLength(20);
+           profile.Property(p => p.Direccion).IsRequired().HasMaxLength(100);
+           profile.Property(p => p.Telefono).IsRequired().HasMaxLength(20);
+           profile.Property(p => p.Referencia);
 
-            Clientes.Property(p => p.Nombre).IsRequired().HasMaxLength(20);
-            Clientes.Property(p => p.Direccion).IsRequired().HasMaxLength(100);
-            Clientes.Property(p => p.Telefono).IsRequired().HasMaxLength(20);
-            Clientes.Property(p => p.Referencia);
+           profile.HasOne(us => us.User).WithOne(p => p.Profile)
+           .HasForeignKey<Profile>(p => p.userForeiKey)
+           .OnDelete(DeleteBehavior.Cascade);
 
-            Clientes.HasData(listaCliente);
-        });
+           profile.HasData(listaDb.listaPerfil());
+       });
+
+        modelBuilder.Entity<Rol>(R =>
+       {
+
+           R.ToTable("rol");
+           R.HasKey(rol => rol.Id);
+           R.Property(rol => rol.rolName).IsRequired().HasMaxLength(15).IsUnicode();
+
+           R.HasData(listaDb.listRol());
+       });
+
 
         modelBuilder.Entity<Pedido>(Pedido =>
         {
-            List<Pedido> Listped = new List<Pedido>();
-            Listped.Add(new Pedido()
-            {
-                Id_pedido = Guid.Parse("adc4aba6-b2b6-4ca6-a715-e563987fd02e"),
-                ClienteForeingKey = Guid.Parse("7b5e9399-8e95-4ae8-8745-9542a01e2cc3"),
-                Obs = "Coca",
-                Estado = "Pendiente"
-            });
 
             Pedido.ToTable("pedido");
-            Pedido.HasKey(p => p.Id_pedido);
-            Pedido.HasOne(cli => cli.Cliente).WithMany(ped => ped.listaPedido).HasForeignKey(c => c.ClienteForeingKey);
+            Pedido.HasKey(p => p.id);
+            Pedido.HasOne(cli => cli.Cliente)
+            .WithMany(ped => ped.listaPedido)
+            .HasForeignKey(c => c.ClienteForeingKey);
 
-            Pedido.Property(p => p.Id_pedido).IsRequired().ValueGeneratedOnAdd();
+            Pedido.Property(p => p.id).IsRequired().ValueGeneratedOnAdd();
             Pedido.Property(p => p.Obs).IsRequired().HasMaxLength(50);
             Pedido.Property(p => p.Estado).IsRequired().HasMaxLength(12);
 
-            Pedido.HasData(Listped);
-        });
-
-        modelBuilder.Entity<CadeteCliente>(CC =>
-        {
-            CC.ToTable("cadeteCliente");
-            CC.HasKey(CC => CC.Id_cadClient);
-            CC.Property(CC => CC.Id_cadClient).IsRequired().ValueGeneratedOnAdd();
-
-            CC.HasOne(c => c.Cadete).WithMany(cc => cc.CadClien).HasForeignKey(c => c.CadeteForeingKey).OnDelete(DeleteBehavior.Restrict);
-            CC.HasOne(c => c.Cliente).WithMany(cc => cc.CadClien).HasForeignKey(c => c.ClienteForeingKey).OnDelete(DeleteBehavior.Restrict);
+            Pedido.HasData(listaDb.listPedido());
         });
 
         modelBuilder.Entity<CadetesPedido>(CP =>
         {
             CP.ToTable("cadetePedido");
-            CP.HasKey(CC => CC.Id_cadPed);
-            CP.Property(CC => CC.Id_cadPed).IsRequired().ValueGeneratedOnAdd();
+            CP.HasKey(CC => CC.id);
+            CP.Property(CC => CC.id).IsRequired().ValueGeneratedOnAdd();
 
-            CP.HasOne(c => c.Cadete).WithMany(cp => cp.Cadp).HasForeignKey(c => c.CadeteForeingKey).OnDelete(DeleteBehavior.Restrict);
-            CP.HasOne(p => p.Pedido).WithOne(cp => cp.Cadp).HasForeignKey<CadetesPedido>(p => p.PedidoForeingKey).OnDelete(DeleteBehavior.Restrict);
+            CP.HasOne(c => c.Cadete).
+            WithMany(cp => cp.Cadp).HasForeignKey(c => c.userForeingKey)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            CP.HasOne(p => p.Pedido)
+            .WithOne(cp => cp.Cadp)
+            .HasForeignKey<CadetesPedido>(p => p.pedidoForeingKey)
+            .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Historial>(CC =>
+        {
+            CC.ToTable("historial");
+            CC.HasKey(CC => CC.id);
+            CC.Property(CC => CC.id).IsRequired().ValueGeneratedOnAdd();
         });
     }
 }

@@ -1,7 +1,9 @@
+using Cadeteria.Authorization;
 using Cadeteria.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cadeteria;
+
 
 [ApiController]
 [Route("api/[controller]")]
@@ -23,8 +25,10 @@ public class CadetePedidoController : ControllerBase
     {
         try
         {
-            var response = _db.Clientes.Join(_db.Pedido, client => client.Id_cliente, ped => ped.ClienteForeingKey,
-              (client, ped) => new { ped.Id_pedido, ped.ClienteForeingKey, ped.Obs, ped.Estado, client.Nombre }).Where(x => x.Estado == "Pendiente").ToList();
+
+            var response = _db.Profile.Join(_db.Pedido, client => client.id, ped => ped.ClienteForeingKey,
+              (client, ped) => new { ped.id, ped.ClienteForeingKey, ped.Obs, ped.Estado, client.Nombre })
+              .Where(x => x.Estado == "Pendiente").ToList();
             return Ok(response);
         }
         catch (System.Exception e)
@@ -34,23 +38,18 @@ public class CadetePedidoController : ControllerBase
         }
     }
     [HttpGet]
-    [Route("action")]
+    [Route("action/{id}")]
     public IActionResult GetLista(Guid id)
     {
         try
         {
-            var response = _db.Clientes.Join(_db.Pedido, client => client.Id_cliente, ped => ped.ClienteForeingKey,
-              (client, ped) => new
-              {
-                  ped.Id_pedido,
-                  ped.Obs,
-                  ped.ClienteForeingKey,
-                  ped.Estado,
-                  client.Nombre
-              }).Join(_db.CadPed, cc => cc.Id_pedido, cp => cp.PedidoForeingKey,
-              (cc, cp) => new { cc.ClienteForeingKey, cc.Estado, cc.Id_pedido, cc.Nombre, cc.Obs, cp.Id_cadPed })
-              .Where(x => x.Estado == "En camino").ToList();
+            // var response = _db.Profile.Join(_db.Pedido, client => client.id, ped => ped.ClienteForeingKey,
+            //   (client, ped) => new { ped.id, ped.ClienteForeingKey, ped.Obs, ped.Estado, client.Nombre })
+            //   .Where(x => x.Estado == "En camino").ToList();
 
+            var response = _db.CadPed.Join(_db.Pedido, cadp => cadp.pedidoForeingKey, ped => ped.id,
+                (cadp, ped) => new { cadp.id, cadp.pedidoForeingKey, cadp.userForeingKey, ped.Obs, ped.Estado, ped.ClienteForeingKey })
+                .Where(x => x.userForeingKey == id && x.Estado == "En camino");
             return Ok(response);
         }
         catch (System.Exception e)
@@ -76,12 +75,7 @@ public class CadetePedidoController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
-    public IActionResult Put(Guid id_pedido, [FromBody] Pedido pedido)
-    {
-        //_dbcadped.Update(id_pedido, pedido);
-        return Ok();
-    }
+
     [HttpDelete("{id}")]
     public IActionResult Delete(Guid id)
     {

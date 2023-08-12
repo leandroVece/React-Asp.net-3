@@ -9,8 +9,6 @@ const NavMenu = () => {
   const auth = useAuth();
   const [collapsed, setCollapsed] = useState(true);
 
-  //actualizar con un setState que cambie su balor al apretar el boton
-
   const toggleNavbar = (e) => {
     setCollapsed(!collapsed)
   }

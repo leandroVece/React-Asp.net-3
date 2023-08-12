@@ -11,5 +11,8 @@ public interface IUserRepository
     void Register(RegisterRequest model);
     void Update(Guid id, UpdateRequest model);
     void Delete(Guid id);
+    List<JoinResponse> GetUserJoin(int page);
+    List<JoinResponse> GetUserJoinAndWhere(int page, string condicion);
+
 
 }

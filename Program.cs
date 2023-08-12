@@ -9,6 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
+// if (env.IsProduction())
+//     services.AddDbContext<DataContext>();
+// else
+//     services.AddDbContext<DataContext, SqliteDataContext>();
+
 builder.Services.AddSqlServer<DataContext>(builder.Configuration.GetConnectionString("SQLServer"));
 
 builder.Services.AddCors();
@@ -24,17 +29,12 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRolRepository, RolRepository>();
-builder.Services.AddScoped<ICadeteRepository, CadeteRepository>();
-builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<ICadetePedidoRepository, CadetePedidoRepository>();
-builder.Services.AddScoped<ICadeteClienteRepository, CadeteClienteRepository>();
+builder.Services.AddScoped<IHistorialRepository, HistorialRepository>();
 
 var app = builder.Build();
-
-
-
-
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

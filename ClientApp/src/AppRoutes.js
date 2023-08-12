@@ -10,6 +10,8 @@ import TomarPedido from "./components/TomarPedido";
 import ActionPedido from "./components/ActionPedido";
 import FormPedido from "./components/FormPedido";
 import UpdateUser from "./components/UpdateUser";
+import Profile from "./components/Profile";
+import FormProfile from "./components/FormProfile";
 
 const AppRoutes = [
   {
@@ -23,6 +25,7 @@ const AppRoutes = [
     name: "Cadete",
     path: '/cadete',
     private: true,
+    exclusive: true,
     element: <Cadete />
   },
   {
@@ -40,6 +43,7 @@ const AppRoutes = [
     name: "Login",
     path: '/login',
     private: false,
+    publicOnly: true,
     element: <Login />
   },
   {
@@ -55,6 +59,11 @@ const AppRoutes = [
   },
   {
     invisible: true,
+    path: '/formProfile',
+    element: <FormProfile />
+  },
+  {
+    invisible: true,
     path: '/tomarPedido',
     element: <TomarPedido />
   },
@@ -65,10 +74,44 @@ const AppRoutes = [
   },
   {
     name: "Usuarios",
-    path: '/Usuarios',
+    path: '/usuarios',
     private: true,
     exclusive: true,
     element: <Usuarios />
+  },
+  {
+    path: '/usuarios/:usuarioPage',
+    private: true,
+    exclusive: true,
+    invisible: true,
+    element: <Usuarios />
+  },
+  {
+    path: '/cadete/:cadetepage',
+    private: true,
+    exclusive: true,
+    invisible: true,
+    element: <Cadete />
+  },
+  {
+    path: '/cliente/:clientePage',
+    private: true,
+    exclusive: true,
+    invisible: true,
+    element: <Cliente />
+  },
+  {
+    path: '/pedido/:pedidoPage',
+    private: true,
+    exclusive: true,
+    invisible: true,
+    element: <Pedido />
+  },
+  {
+    name: "Perfil",
+    path: '/profile',
+    private: true,
+    element: <Profile />
   },
   {
     path: '/UpdateUser',

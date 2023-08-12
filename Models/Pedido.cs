@@ -6,7 +6,7 @@ namespace Cadeteria.Models;
 
 public partial class Pedido
 {
-    public Guid Id_pedido { get; set; }
+    public Guid id { get; set; }
     [NotMapped]
     [JsonIgnore]
     public virtual Guid CadeteForeingKey { get; set; }
@@ -16,11 +16,11 @@ public partial class Pedido
 
     [NotMapped]
     [JsonIgnore]
-    public virtual Clientes? Cliente { get; set; }
+    public virtual Profile? Cliente { get; set; }
 
     [NotMapped]
     [JsonIgnore]
-    public virtual Cadetes? Cadete { get; set; }
+    public virtual User? Cadete { get; set; }
 
     [NotMapped]
     [JsonIgnore]
