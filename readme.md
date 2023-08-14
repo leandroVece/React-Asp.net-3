@@ -956,4 +956,4 @@ A estos botones lo podemos llamar en nuestro perfil y de esa manera podemos acce
 
     export default Profile;
 
-Si llegaste hasta aqui te felicito porque completaste, completaste este pequeño curso de desarrollo de app web con Asp.Net y React.js
+Si llegaste hasta aqui te felicito porque completaste, completaste este pequeño curso de desarrollo de app web con Asp.Net y React.js. Sin embargo, esto no termina aqui, como habras visto todavia hay muchas cosas que faltan solucionar, cosas que se pueden agregar y cosas que se pueden mejorar. Pero esas cosas se las pueden ir parchando poco a poco y no como un proyecto completo.

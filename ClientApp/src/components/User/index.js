@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { AuthRouter, useAuth } from "../Auth";
 import TableRow from "../TableRow";
-import { GlobalContext } from "../../ApiContext"
 import Loader from "../Loader"
 import Paginacion from "../Paginacion";
 import { useParams } from "react-router-dom";
@@ -11,15 +10,7 @@ const Usuarios = () => {
     const auth = useAuth();
     const param = useParams()
 
-    if (param?.usuarioPage) {
-        auth.setUrl(`user/page/${param?.usuarioPage}`)
-    }
-    else
-        auth.setUrl('/user')
-
-    const {
-        loading,
-    } = React.useContext(GlobalContext)
+    auth.setUrl(`user/page/${param?.usuarioPage || 1}`)
 
     return (
         <>
@@ -31,7 +22,7 @@ const Usuarios = () => {
 
                 {auth.loading && <Loader />}
 
-                {!auth.loading && auth.dbUser.data && (
+                {auth.dbUser.data && (
                     <div>
                         <div>
                             <table className="table w-75 mx-auto">
@@ -51,13 +42,13 @@ const Usuarios = () => {
                                                 user={user}
                                                 deleteWithToken={auth.deleteWithToken}
                                             />
-                                        )) : (
+                                        )
+                                    ) : (
                                         <tr>
                                             <td colSpan="2">Sin datos</td>
                                         </tr>)}
                                 </tbody>
                             </table>
-
                         </div>
 
                         < Paginacion

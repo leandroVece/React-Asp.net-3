@@ -4,6 +4,7 @@ using AutoMapper;
 using BCrypt.Net;
 using Cadeteria.Models;
 using Cadeteria.Authorization;
+using Microsoft.EntityFrameworkCore.Internal;
 
 public class UserRepository : IUserRepository
 {
@@ -37,7 +38,7 @@ public class UserRepository : IUserRepository
         var response = _mapper.Map<AuthenticateResponse>(user);
         response.Token = _jwtUtils.GenerateToken(user);
         response.Rol = Rol.rolName;
-        response.id_profile = prof.id;
+        //response.id_profile = (!string.IsNullOrEmpty(prof.id.ToString())) ? prof.id : null;
         return response;
     }
 
@@ -66,6 +67,7 @@ public class UserRepository : IUserRepository
 
         // hash password
         user.password = BCrypt.HashPassword(model.Password);
+        user.rolForeikey = Guid.Parse("f0601b48-a878-4fb5-a767-3f1340b8c0d8");
 
         // save user
         _context.Users.Add(user);
@@ -76,9 +78,9 @@ public class UserRepository : IUserRepository
     {
         var user = getUser(id);
 
-        // validate
-        if (model.UserName != user.userName && _context.Users.Any(x => x.userName == model.UserName))
-            throw new AppException("Username '" + model.UserName + "' is already taken");
+        // validate campo cuando el userName no puede ser cambiado, sugerencia para usar Email
+        // if (model.UserName != user.userName && _context.Users.Any(x => x.userName == model.UserName))
+        //     throw new AppException("Username '" + model.UserName + "' is already taken");
 
         // hash password if it was entered
         if (!string.IsNullOrEmpty(model.Password))
@@ -163,6 +165,5 @@ public class UserRepository : IUserRepository
 
         return data;
     }
-
 
 }

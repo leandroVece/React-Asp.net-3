@@ -32,6 +32,7 @@ function AuthProvider({ children }) {
                 setLoading(false);
 
             } else {
+                setDbUser(null)
                 console.log(res)
             }
         });
@@ -49,6 +50,7 @@ function AuthProvider({ children }) {
         helpHttp().post(url, options).then((res) => {
             if (res.err) {
                 //setError(res);
+                alert("A oc¿urrido un error inesperado. Vuelva atras e intente de nuevo")
             } else {
                 console.log(res);
                 setDbUser([...dbUser, res]);
@@ -114,6 +116,7 @@ function AuthProvider({ children }) {
     }
 
     const login = (data) => {
+        console.log(data);
         cookies.set('id', data.id, { path: '/', maxAge: 60 * 60 * 24 })
         cookies.set('name', data.userName, { path: '/', maxAge: 30 * 60 * 24 })
         cookies.set('rol', data.rol, { path: '/', maxAge: 60 * 60 * 24 })

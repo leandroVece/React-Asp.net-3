@@ -22,28 +22,32 @@ const FormProfile = () => {
     const nav = useNavigate();
 
     useEffect(() => {
-        if (state['data'].rolName == "cadete") {
-            setImg("./img/cadete.png")
-        } else {
-            setImg("./img/pedido.jpg")
-        }
-        if (state['data']) {
+
+        if (state) {
             setForm(state['data']);
+            if (state['data'].rolName == "cadete") {
+                setImg("./img/cadete.png")
+            } else {
+                setImg("./img/pedido.jpg")
+            }
         } else {
             setForm(InitialForm);
+            setImg("./img/pedido.jpg")
         }
-    }, [auth.url])
+    }, [state])
 
     let array = Object.getOwnPropertyNames(form)
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (form.id == null) {
+            form.userForeiKey = auth.cookies.get('id');
             auth.createWithToken(form)
         } else {
             auth.UpdateWithToken(form);
         }
         handleReset();
+        nav('/profile')
     };
 
     const handleChange = (e) => {
@@ -55,7 +59,6 @@ const FormProfile = () => {
 
     const handleReset = () => {
         setForm(InitialForm);
-        nav('/profile')
     };
 
     return (

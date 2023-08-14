@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../Auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Paginacion = ({ totalPages, param, url }) => {
-
-    const auth = useAuth();
 
     const [boton, setBoton] = useState([]);
     const [pageNumber, setpageNumber] = useState(param)
     const [pase, setPase] = useState(false)
     const nav = useNavigate();
+    const paramUrl = useParams()
 
     function cargarArray(inicial, final) {
         let array = []
@@ -21,7 +19,7 @@ const Paginacion = ({ totalPages, param, url }) => {
 
     useEffect(() => {
         let arrayCargado = []
-        if (pageNumber < 6 && totalPages < 6) {
+        if (pageNumber < 6 && (totalPages < 6)) {
             arrayCargado = arrayCargado.concat(cargarArray(1, totalPages))
             setBoton(arrayCargado)
             return
@@ -49,13 +47,11 @@ const Paginacion = ({ totalPages, param, url }) => {
             setBoton(arrayCargado)
         }
         //solo para que se haga una vez, porque ya habria un nueva recarga al cambiar la url
-
-    }, [pageNumber, totalPages])
+    }, [paramUrl, totalPages, pase])
 
     const handelClickMore = () => {
-        if (pageNumber <= totalPages)
+        if (pageNumber < totalPages)
             setpageNumber(pageNumber + 1)
-
     }
     const handelClickless = () => {
         if (pageNumber > 1)
@@ -68,14 +64,16 @@ const Paginacion = ({ totalPages, param, url }) => {
 
     useEffect(() => {
         if (pageNumber > 1 || pase) {
-            nav(`/${url}/${pageNumber}`)
             setPase(true)
+            nav(`/${url}/${pageNumber}`)
         }
     }, [pageNumber])
 
     useEffect(() => {
         setpageNumber(1)
+        setPase(false)
     }, [url])
+
 
     return (
         <>

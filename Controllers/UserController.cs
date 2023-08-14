@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using Cadeteria.Authorization;
 using Cadeteria.Models;
 using Cadeteria.Services;
-using System.Collections;
 
 [Authorize]
 [ApiController]
@@ -47,77 +46,51 @@ public class UserController : ControllerBase
         return Ok(new { message = "Registration successful" });
     }
 
-    [HttpGet]
-    public IActionResult GetAll()
+    [HttpGet("{id}")]
+    public IActionResult Getbyid(Guid id)
     {
-        int page = 1;
-        var pagedData = _userRepository.GetUserJoin(page);
+        var response = _userRepository.GetById(id);
+
+        return Ok(response);
+    }
+
+
+    [HttpGet]
+    [Route("page/{page:int?}")]
+    public IActionResult GetPageUser(int? page = 1)
+    {
+        List<JoinResponse> pagedData = _userRepository.GetUserJoin((int)page);
 
         var totalRecords = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id,
         (us, r) => new { us.Id, r.rolName }).Count();
         return Ok(new PagedResponse<IEnumerable<JoinResponse>>(
-            pagedData, totalRecords / 1, page));
+            pagedData, totalRecords / 1, (int)page));
     }
 
-    [HttpGet]
-    [Route("page/{page}")]
-    public IActionResult GetPage(int page = 1)
-    {
-        List<JoinResponse> pagedData = _userRepository.GetUserJoin(page);
-
-        var totalRecords = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id,
-        (us, r) => new { us.Id, r.rolName }).Count();
-        return Ok(new PagedResponse<IEnumerable<JoinResponse>>(
-            pagedData, totalRecords / 1, page));
-    }
 
     [HttpGet]
-    [Route("cadete")]
-    public IActionResult GetCadete()
+    [Route("cadete/page/{page:int?}")]
+    public IActionResult GetCadetepage(int? page = 1)
     {
-        int page = 1;
-        var pagedData = _userRepository.GetUserJoinAndWhere(page, "cadete");
+        var pagedData = _userRepository.GetUserJoinAndWhere((int)page, "cadete");
 
         var totalRecords = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id,
         (us, r) => new { us.Id, r.rolName }).Where(x => x.rolName == "cadete").Count();
         return Ok(new PagedResponse<IEnumerable<JoinResponse>>(
-            pagedData, totalRecords / 1, page));
+            pagedData, totalRecords / 1, (int)page));
     }
 
-    [HttpGet]
-    [Route("cadete/page/{int}")]
-    public IActionResult GetCadetepage(int page = 1)
-    {
-        var pagedData = _userRepository.GetUserJoinAndWhere(page, "cadete");
-
-        var totalRecords = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id,
-        (us, r) => new { us.Id, r.rolName }).Where(x => x.rolName == "cadete").Count();
-        return Ok(new PagedResponse<IEnumerable<JoinResponse>>(
-            pagedData, totalRecords / 1, page));
-    }
 
     [HttpGet]
-    [Route("cliente")]
-    public IActionResult GetCliente()
+    [Route("cliente/page/{page:int?}")]
+    public IActionResult GetClientePage(int? page = 1)
     {
-        int page = 1;
-        var pagedData = _userRepository.GetUserJoinAndWhere(page, "cliente");
+        var pagedData = _userRepository.GetUserJoinAndWhere((int)page, "cliente");
 
         var totalRecords = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id,
         (us, r) => new { us.Id, r.rolName }).Where(x => x.rolName == "cliente").Count();
         return Ok(new PagedResponse<IEnumerable<JoinResponse>>(
-            pagedData, totalRecords / 1, page));
-    }
-    [HttpGet]
-    [Route("cliente/page/{page}")]
-    public IActionResult GetClientePage(int page = 1)
-    {
-        var pagedData = _userRepository.GetUserJoinAndWhere(page, "cliente");
-
-        var totalRecords = _db.Users.Join(_db.rols, us => us.rolForeikey, r => r.Id,
-        (us, r) => new { us.Id, r.rolName }).Where(x => x.rolName == "cliente").Count();
-        return Ok(new PagedResponse<IEnumerable<JoinResponse>>(
-            pagedData, totalRecords / 1, page));
+            pagedData, totalRecords / 1, (int)page));
     }
 
     [HttpGet("rol")]

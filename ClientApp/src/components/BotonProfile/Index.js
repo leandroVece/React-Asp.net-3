@@ -26,10 +26,10 @@ const Botones = (id) => {
     if (auth.cookies.get("rol") !== "cliente") {
         return (
             <>
-                <div class="mt-2 d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button class="btn bg-c-lite-green text-white"
+                <div className="mt-2 d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button className="btn bg-c-lite-green text-white"
                         onClick={TomarPedido} type="button">Tomar Pedido</button>
-                    <button class="btn bg-c-lite-green text-white"
+                    <button className="btn bg-c-lite-green text-white"
                         onClick={handelRedirect} type="button"> Cancelar/Entregar</button>
                 </div>
             </>
@@ -37,8 +37,8 @@ const Botones = (id) => {
     } else {
         return (
             <>
-                <div class="mt-2 d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button class="btn bg-c-lite-green text-white"
+                <div className="mt-2 d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button className="btn bg-c-lite-green text-white"
                         onClick={HacerPedido} type="button">Nuevo Pedido</button>
                 </div>
             </>

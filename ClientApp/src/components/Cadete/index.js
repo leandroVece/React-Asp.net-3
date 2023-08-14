@@ -14,10 +14,7 @@ const Cadete = () => {
     const auth = useAuth();
     const param = useParams()
 
-    if (param?.cadetepage)
-        auth.setUrl(`/user/cadete/page/${param?.cadetepage}`)
-    else
-        auth.setUrl("/user/cadete")
+    auth.setUrl(`/user/cadete/page/${param?.cadetepage || 1}`)
 
     const handelRedirect = (id) => {
         navigate("/TomarPedido", { state: { id } })

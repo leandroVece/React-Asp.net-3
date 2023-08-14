@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import { GlobalContext } from "../../ApiContext";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Auth";
+import { helpHttp } from "../../Helper";
 
 const InitialForm = {
-    name: "",
+    userName: "",
     password: "",
 }
 
 const Register = () => {
 
     const navigate = useNavigate();
+    const auth = useAuth()
     const [form, setForm] = useState(InitialForm);
 
     const {
@@ -28,7 +31,23 @@ const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        createData(form)
+        console.log(form);
+        let options = {
+            body: form,
+            headers: {
+                'Content-Type': 'application/json',
+                //"Authorization": "Bearer " + cookies.get("Token")
+            },
+        };
+        helpHttp().post("/user/register", options).then((res) => {
+            if (res.err) {
+                //setError(res);
+                alert("A ocurrido un error inesperado. Vuelva atras e intente de nuevo")
+            } else {
+                console.log(res);
+                navigate("/login")
+            }
+        })
     }
 
     return (
@@ -39,7 +58,7 @@ const Register = () => {
                     <div className="illustration">
                         <i className="icon ion-ios-locked-outline"></i></div>
                     <div className="form-group">
-                        <input className="form-control" type="text" name="name" placeholder="UserName" value={form.name} onChange={handleChange} /></div>
+                        <input className="form-control" type="text" name="userName" placeholder="UserName" value={form.name} onChange={handleChange} /></div>
                     <div className="form-group">
                         <input className="form-control" type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} /></div>
                     <div className="form-group">

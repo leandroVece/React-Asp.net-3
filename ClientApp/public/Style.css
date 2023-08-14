@@ -6,3 +6,18 @@
 .table {
     overflow-x: auto;
 }
+
+
+
+.bodyConteiner {
+    height: calc(50vh - 180px);
+    clear: both;
+}
+
+footer {
+    height: 180px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+
+}

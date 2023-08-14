@@ -9,12 +9,18 @@ const Profile = () => {
     const auth = useAuth();
     const navigate = useNavigate();
 
-    auth.setUrl(`/profile/${auth.cookies.get('id')}`)
+    if (auth.cookies.get('id_profile'))
+        auth.setUrl(`/profile/${auth.cookies.get('id')}`)
+    else
+        auth.setDbUser(null)
 
     const handelEdit = (data) => {
-        delete data.userName
-        delete data.userForeiKey
-        navigate("/formProfile", { state: { data } })
+        if (auth.dbUser) {
+            delete data.userName
+            delete data.userForeiKey
+            navigate("/formProfile", { state: { data } })
+        }
+        navigate("/formProfile", { state: null })
     }
 
     const { id, ...res } = auth.dbUser

@@ -1,3 +1,4 @@
+using AutoMapper.Internal.Mappers;
 using Cadeteria.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,7 @@ public class DataContext : DbContext
             User.HasKey(User => User.Id);
             User.Property(User => User.userName).IsRequired().HasMaxLength(15).IsUnicode();
             User.Property(User => User.password).IsRequired().HasMaxLength(80);
+            //User.Property(User => User.rolForeikey).HasDefaultValue(Guid.Parse("E2A4980F-7C50-45B0-ABA5-6A46D79CF328"));
 
             User.HasOne(r => r.Rol).WithMany(us => us.User).HasForeignKey(r => r.rolForeikey);
 

@@ -1,32 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { AuthRouter, useAuth } from "../Auth";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { helpHttp } from "../../Helper";
 
 const InitialForm = {
-    name: "",
-    rolName: "",
+    userName: "",
     password: "",
-    id: null,
-    rolForeiKey: null
+    rolForeikey: null
 }
 
 const UpdateUser = () => {
     let { state } = useLocation()
     const auth = useAuth();
+    const nav = useNavigate()
     auth.setUrl('/user/' + state.id_user)
-    const [form, setForm] = useState(null);
+    const [form, setForm] = useState(InitialForm);
     const [rol, setRol] = useState([]);
 
     useEffect(() => {
         let options = {
             headers: {
+                'Content-Type': 'application/json',
                 "Authorization": "Bearer " + auth.cookies.get("Token")
             }
         };
         helpHttp().get("/user/rol", options).then((res) => {
             if (!res.err) {
                 setRol(res)
+                //setForm(auth.dbUser);
             } else {
                 console.log("Ocurrio un error Vuelva atra e intente de nuevo")
             }
@@ -34,12 +35,13 @@ const UpdateUser = () => {
     }, [auth.url]);
 
     useEffect(() => {
-        if (auth.dbUser[0]) {
-            setForm(auth.dbUser[0]);
+        if (auth.dbUser) {
+            setForm(auth.dbUser);
+            form.password = ""
         } else {
             setForm(InitialForm);
         }
-    }, [auth.dbUser[0]]);
+    }, [rol]);
 
 
     const handleChange = (e) => {
@@ -51,10 +53,25 @@ const UpdateUser = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        delete form.rolName;
-        console.log(form);
+        delete form.id
+        let options = {
+            body: form,
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer " + auth.cookies.get("Token")
+            },
+        };
+
+        helpHttp().put(`/user/${auth.dbUser.id}`, options).then((res) => {
+            if (!res.err) {
+                nav('/usuarios')
+            } else {
+                alert("Ocurrio un error Vuelva atra e intente de nuevo")
+            }
+        });
+
     }
-    console.log(auth.dbUser[0]);
+
 
     return (
         <>
@@ -70,17 +87,18 @@ const UpdateUser = () => {
                         <div className="illustration">
                             <i className="icon ion-ios-locked-outline"></i></div>
                         <div className="form-group">
-                            <input className="form-control" type="text" name="name" placeholder="UserName" value={form?.name} onChange={handleChange} />
+                            <input className="form-control" type="text" name="userName" placeholder="New UserName" value={form?.userName} onChange={handleChange} />
                         </div>
                         <div className="form-group">
                             <input className="form-control" type="password" name="password" placeholder="New Password" value={form?.password} onChange={handleChange} />
                         </div>
                         <div className="form-group">
-                            <select className="form-control" name="id_rol" >
-                                <option select className="text-dark" value={form?.id_rol}>{form?.rolName}</option>
+                            <select className="form-control" onChange={handleChange} name="rolForeikey" >
+                                <option className="text-dark" value={form?.rolForeikey}>Elija un Rol</option>
                                 {rol.length > 0 ?
                                     rol.map((x, index) => {
-                                        return (<option key={index} value={x.id_rol} className="text-dark">{x.rolName}</option>)
+                                        return <option key={index} value={x.id} className="text-dark"
+                                        > {x.rolName}</option>
                                     }) : null
                                 }
                             </select>

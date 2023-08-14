@@ -36,6 +36,8 @@ const Pedido = () => {
         else
             setUrl(`/api/pedido/page`)
 
+
+
     const HandelEdit = (data) => {
         delete data.nombre
         navigate("/formPedido", { state: { data } })

@@ -13,18 +13,15 @@ const Cliente = () => {
 
     var permisos = roles.find(rol => (rol.type === auth.cookies.get("rol")) ? rol : null);
 
-    if (param?.clientePage)
-        auth.setUrl(`user/cliente/page/${param?.clientePage}`)
-    else
-        auth.setUrl("user/cliente")
-
-
+    auth.setUrl(`user/cliente/page/${param?.clientePage || 1}`)
 
     const handelRedirect = (data) => {
         //hacer un pedido
-
         navigate("/FormPedido", { state: { data } })
     }
+
+
+
     const handelEdit = (data) => {
         delete data.Id
         delete data.rolName

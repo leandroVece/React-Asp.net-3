@@ -4,6 +4,7 @@ using Cadeteria;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cadeteria.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230814135633_defaulValue")]
+    partial class defaulValue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,7 +253,9 @@ namespace Cadeteria.Migrations
                         .HasColumnType("nvarchar(80)");
 
                     b.Property<Guid>("rolForeikey")
-                        .HasColumnType("uniqueidentifier");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValue(new Guid("e2a4980f-7c50-45b0-aba5-6a46d79cf328"));
 
                     b.Property<string>("userName")
                         .IsRequired()
@@ -269,63 +273,63 @@ namespace Cadeteria.Migrations
                         new
                         {
                             Id = new Guid("e2a4980f-7c50-45b0-aba5-6a46d79cf328"),
-                            password = "$2a$11$g0aEclhmH.q0M9ytyHHB2.FphfgzqwWQ/6PmFUEFp6n6tFUt0baGO",
+                            password = "$2a$11$CWzAIOYgn/LCz.Laq8bP1.u3jUAopYKy6yZJOBFKJQ4Kh1/jI8D.i",
                             rolForeikey = new Guid("7aafd6fb-612e-42c7-99db-cbec0fdad96f"),
                             userName = "admin"
                         },
                         new
                         {
                             Id = new Guid("df0efb73-de14-4140-bbd0-c357148d89d1"),
-                            password = "$2a$11$.bb/TcdnT4LBkEWz7kfN6OnS1lrRKt4AdwkFo6z0BOK8qOB.uVcsm",
+                            password = "$2a$11$o/AQ9pdSQZmE.HgShrL0Yuf40sRnuW24.fh3m.OYlJt18fc8z6yfO",
                             rolForeikey = new Guid("7a86db69-1474-4d92-a18e-91899d876c92"),
                             userName = "cadete"
                         },
                         new
                         {
                             Id = new Guid("36126fee-fee7-4d62-a22e-959feb2dd013"),
-                            password = "$2a$11$INDr.6mInBKk.aTiszIme.lfEjc.YnnKd4hefZZSqnDnAeQwRLTG6",
+                            password = "$2a$11$.NWdhtU46CS0VkMH3JEbjePWO7mjjLomn0ZfFEQYIBATaDlLrF.Oq",
                             rolForeikey = new Guid("f0601b48-a878-4fb5-a767-3f1340b8c0d8"),
                             userName = "cliente"
                         },
                         new
                         {
                             Id = new Guid("19ccc667-10c5-47b7-abd0-bae699c1cd3e"),
-                            password = "$2a$11$..xQWO9lggd0iM1BRL4F9eVjWpgrfp0mRMAomihNtd276lNkkb6q.",
+                            password = "$2a$11$o7VecbcDsGaD.uTKNCjmWeYol/7ll.8CNvPQiiM2pmzcvVpkkUmJC",
                             rolForeikey = new Guid("f0601b48-a878-4fb5-a767-3f1340b8c0d8"),
                             userName = "cliente01"
                         },
                         new
                         {
                             Id = new Guid("afaa31d8-013f-4dee-b21a-f9d03278d26a"),
-                            password = "$2a$11$U0SjlkTbUFQ9NG0mhLjeue4Ytkx5W/SP3ITgoFv7yn2kO44nz0QKW",
+                            password = "$2a$11$xnEfvJFTGaHfNiJid7rGLe4VqZ.3aJWKpPllBDh7PySFr2WpZOkSW",
                             rolForeikey = new Guid("f0601b48-a878-4fb5-a767-3f1340b8c0d8"),
                             userName = "cliente2"
                         },
                         new
                         {
                             Id = new Guid("c9d6ff8f-82ac-4eef-80df-de4999c4bb45"),
-                            password = "$2a$11$kgNwNTeLWccE2luYsys94el5aCnvqgFouGQWlnf/xMmB5BbEdU/Oi",
+                            password = "$2a$11$sRQApIqchVdCDGAcGyIAW.umtmCcyDtpSs3gVeDCzm9mrV8UBIh12",
                             rolForeikey = new Guid("f0601b48-a878-4fb5-a767-3f1340b8c0d8"),
                             userName = "cliente3"
                         },
                         new
                         {
                             Id = new Guid("07899a8d-bc7f-46d4-8d23-b174203f8bb0"),
-                            password = "$2a$11$k5Cr9QGAtOQEbnoFiN.64.djdzD5USsTHh1G0Lrk.fk5tV9nzboQy",
+                            password = "$2a$11$wvOVlAJDM4U.Iw2acnpK0.yof5tIA2/TrDZuk/P5V7uBmH3GH1G0O",
                             rolForeikey = new Guid("f0601b48-a878-4fb5-a767-3f1340b8c0d8"),
                             userName = "cliente02"
                         },
                         new
                         {
                             Id = new Guid("2d58f017-e038-4efa-acc1-f5f9e2d08668"),
-                            password = "$2a$11$uNfm4V0W35R6C4sFWTaGHuLVA6ZqLuDSucXQK4.4b/81j/McWDPFm",
+                            password = "$2a$11$gcldY2UAc/qpixjGeVD7K.ZUxkz3iibndqhuuEFOF4a.aAWko47HC",
                             rolForeikey = new Guid("f0601b48-a878-4fb5-a767-3f1340b8c0d8"),
                             userName = "cliente03"
                         },
                         new
                         {
                             Id = new Guid("e0bd0d60-7ff8-43a6-b78b-8dc67780c8c9"),
-                            password = "$2a$11$gtBKNAfd42K0ySKgr5dFBOkN1C2ncESNxtH2EjOYHUPhHhrFVKG6m",
+                            password = "$2a$11$uZns6wd20Zc/OB8XxK2YE.k5DC.VX8HxF89mVsuWuMdFoN9b9Tg9W",
                             rolForeikey = new Guid("f0601b48-a878-4fb5-a767-3f1340b8c0d8"),
                             userName = "cadete2"
                         });
