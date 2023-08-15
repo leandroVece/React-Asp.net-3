@@ -9,11 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-// if (env.IsProduction())
-//     services.AddDbContext<DataContext>();
+// if (builder.Environment.IsProduction())
+//     builder.Services.AddDbContext<DataContext>();
 // else
-//     services.AddDbContext<DataContext, SqliteDataContext>();
-
 builder.Services.AddSqlServer<DataContext>(builder.Configuration.GetConnectionString("SQLServer"));
 
 builder.Services.AddCors();

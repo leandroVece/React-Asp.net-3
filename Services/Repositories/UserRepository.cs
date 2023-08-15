@@ -38,7 +38,8 @@ public class UserRepository : IUserRepository
         var response = _mapper.Map<AuthenticateResponse>(user);
         response.Token = _jwtUtils.GenerateToken(user);
         response.Rol = Rol.rolName;
-        //response.id_profile = (!string.IsNullOrEmpty(prof.id.ToString())) ? prof.id : null;
+
+        response.id_profile = (prof != null) ? prof.id : null;
         return response;
     }
 

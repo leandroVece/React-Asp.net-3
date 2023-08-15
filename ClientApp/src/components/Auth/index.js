@@ -130,7 +130,7 @@ function AuthProvider({ children }) {
         cookies.remove('rol', { path: '/' })
         cookies.remove('id_profile', { path: '/' })
         cookies.remove('Token', { path: '/' })
-        return <Navigate to='/' />
+        return <Navigate to='/login' />
     }
 
     const auth = {
